@@ -22,7 +22,7 @@ class DistributionPlots:
         x = np.linspace(C_aware-49, C_aware+50, 100)
         y = scs.binom(C_total, C_cr).pmf(x)
         ax.bar(x, y, alpha=0.5)
-        ax.axvline(x=E_cr * C_total, c='blue', alpha=0.75, linestyle='--')
+        ax.axvline(x=E_cr * C_total, c='red', alpha=0.75, linestyle='--')
         plt.xlabel('Aware')
         plt.ylabel('probability')
         plt.show()
