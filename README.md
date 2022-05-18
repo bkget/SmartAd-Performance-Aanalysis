@@ -1,4 +1,4 @@
-## SmartAd Performance Aanalysis
+## SmartAd Performance Analysis
 
 ### Overview
 A/B testing allows you to compare two or more versions of a given service to see which one performs better.
