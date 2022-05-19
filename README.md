@@ -6,6 +6,7 @@
   - [Overview](#overview)
   - [Requirements](#requirements)
   - [Install](#install)
+  - [Colaborators](#colaborators)
 
 ### Overview
 A/B testing allows you to compare two or more versions of a given service to see which one performs better.
@@ -24,3 +25,7 @@ cd SmartAd-Performance-Analysis
 pip install -r requirements.txt
 ```
 
+### Colaborators
+* [Endework Abera](https://github.com/Endework)
+* [Didier Iradukunda](https://github.com/didier-i)
+* [Biruk Getaneh](https://github.com/bkget)
