@@ -69,11 +69,12 @@ class ABTesting:
         dist = scs.norm(sample_mean, stderr)
         
         return dist
-    
-    def p_val(self, Control, Exposed, p_A, p_B):
-        """
-            Returns the p_value for an A/B test
-        """
-        return scs.binom(Control, p_A).pmf(p_B * Exposed)
-    
+
+    def p_val(self, N_A, N_B, p_A, d_hat):
+        """Returns the p-value for an A/B test"""
+        std_a = np.sqrt(p_A * (1 - p_A) / N_A)
+        std_b = np.sqrt((p_A+d_hat) * (1 - (p_A+d_hat)) / N_B)
+        z_score = (d_hat) / np.sqrt(std_a**2 + std_b**2)
+        return scs.norm().sf(z_score)
+        
     
