@@ -204,3 +204,15 @@ def transform_data( df):
 
         return np.array(control_bernouli), np.array(exposed_bernouli)
 
+def resJson( res):
+    outcome,n, k,l,u,truncated,truncate_decision,x1,r,stats,limits = res
+    jsonRes = {
+        "name": "Sequential AB testing",
+        "outcome": outcome,
+        "decsionMadeIndex": k,
+        "numberOfObservation": len(n),
+        "truncated": truncated,
+        "truncateDecision": truncate_decision,        
+    
+    }
+    return jsonRes
