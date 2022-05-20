@@ -85,7 +85,7 @@ class PlottingFunctions:
         """
         self.plot_norm_dist(ax, mde, stderr, label="Alternative")
         
-    def show_area(ax, mde, stderr, sig_level, area_type=None):
+    def show_area(self, ax, mde, stderr, sig_level, area_type=None):
         """
         Fill between upper significance boundary and distribution for
         alternative hypothesis
@@ -95,33 +95,33 @@ class PlottingFunctions:
         x = np.linspace(-12 * stderr, 12 * stderr, 1000)
         null = ABT.ab_dist(stderr, 'control')
         alternative = ABT.ab_dist(stderr, mde, 'exposed')
+                
+         # if area_type is alpha
+         # Fill between upper significance boundary and distribution for null
+         # hypothesis
+        if area_type == 'alpha':
+             ax.fill_between(x, 0, null.pdf(x), color='blue', alpha=0.25,
+                             where=(x > right))
+             ax.text(-3 * stderr, null.pdf(0),
+                     'alpha={0:.3f}'.format(1 - null.cdf(right)),
+                     fontsize=12, ha='right', color='k')
         
         # if area_type is power
         # Fill between upper significance boundary and distribution for alternative
         # hypothesis
         if area_type == 'power':
-            ax.fill_between(x, 0, alternative.pdf(x), color='green', alpha='0.25',
+            ax.fill_between(x, 0, alternative.pdf(x), color='green', alpha=0.25,
                             where=(x > right))
             ax.text(-5 * stderr, null.pdf(0),
-                    'power = {0:.3f}'.format(1 - alternative.cdf(right)),
+                    'power={0:.3f}'.format(1 - alternative.cdf(right)),
                     fontsize=12, ha='right', color='k')
             
-         # if area_type is alpha
-         # Fill between upper significance boundary and distribution for null
-         # hypothesis
-        if area_type == 'alpha':
-             ax.fill_between(x, 0, null.pdf(x), color='blue', alpha='0.25',
-                             where=(x > right))
-             ax.text(-3 * stderr, null.pdf(0),
-                     'alpha = {0:.3f}'.format(1 - null.cdf(right)),
-                     fontsize=12, ha='right', color='k')
-
         # if area_type is beta
         # Fill between distribution for alternative hypothesis and upper
         # significance boundary
         if area_type == 'beta':
-            ax.fill_between(x, 0, alternative.pdf(x), color='red', alpha='0.25',
+            ax.fill_between(x, 0, alternative.pdf(x), color='red', alpha=0.25,
                             where=(x < right))
             ax.text(-1 * stderr, null.pdf(0),
-                    'beta = {0:.3f}'.format(alternative.cdf(right)),
-                    fontsize=12, ha='right', color='k')
+                    'beta={0:.3f}'.format(alternative.cdf(right)),
+                    fontsize=12, ha='right', color='k')    
