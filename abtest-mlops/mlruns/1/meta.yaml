@@ -1,0 +1,4 @@
+artifact_location: file:///C:/Users/ende/Desktop/abtest-mlops/mlruns/1
+experiment_id: '1'
+lifecycle_stage: active
+name: expt

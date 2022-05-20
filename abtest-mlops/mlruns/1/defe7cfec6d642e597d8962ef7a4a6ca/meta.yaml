@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/ende/Desktop/abtest-mlops/mlruns/1/defe7cfec6d642e597d8962ef7a4a6ca/artifacts
+end_time: 1653051648081
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: defe7cfec6d642e597d8962ef7a4a6ca
+run_uuid: defe7cfec6d642e597d8962ef7a4a6ca
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1653051647356
+status: 3
+tags: []
+user_id: ende
