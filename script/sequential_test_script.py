@@ -162,4 +162,14 @@ def conditionalSPRT( x,y,t1,alpha=0.05,beta=0.10,stop=None):
         truncated=np.nan
     return (outcome,n, k,l,u,truncated,truncate_decision,x1,r,stats,limits)
 
- 
+    
+def get_bernouli_series( engagment_list, success_list):
+    bernouli_series = []
+
+    for engagment, success in zip(engagment_list, success_list):
+        no_list = (engagment - success) * [0]
+        yes_list = (success) * [1]
+        series_item = yes_list + no_list
+        random.shuffle(series_item)
+        bernouli_series += series_item
+    return bernouli_series
