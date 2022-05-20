@@ -173,3 +173,34 @@ def get_bernouli_series( engagment_list, success_list):
         random.shuffle(series_item)
         bernouli_series += series_item
     return bernouli_series
+
+
+def transform_data( df):
+            
+        clean_df = df.query("not (yes == 0 & no == 0)")
+        # segment data into exposed and control groups
+        exposed = clean_df[clean_df['experiment'] == 'exposed']
+        control = clean_df[clean_df['experiment'] == 'control']
+
+        # group data into hours.
+        control['hour'] = control['hour'].astype('str')
+        control['date_hour'] = pd.to_datetime(control['date'] + " " + control['hour'] + ":00" + ":00")
+        control['date_hour'] = control['date_hour'].map(lambda x:  pd.Timestamp(x, tz=None).strftime('%Y-%m-%d:%H'))
+
+        exposed['hour'] = exposed['hour'].astype('str')
+        exposed['date_hour'] = pd.to_datetime( exposed['date'] + " " + exposed['hour'] + ":00" + ":00")
+        exposed['date_hour'] = exposed['date_hour'].map( lambda x:  pd.Timestamp(x, tz=None).strftime('%Y-%m-%d:%H'))
+
+        # create two dataframes with bernouli series 1 for posetive(yes) and 0 for negative(no)
+        cont = exposed.groupby('date_hour').agg({'yes': 'sum', 'no': 'count'})
+        cont = cont.rename(columns={'no': 'engagement', 'yes': 'success'})
+        control_bernouli = get_bernouli_series(
+            cont['engagement'].to_list(), cont['success'].to_list())
+
+        exp = exposed.groupby('date_hour').agg({'yes': 'sum', 'no': 'count'})
+        exp = exp.rename(columns={'no': 'engagement', 'yes': 'success'})
+        exposed_bernouli = get_bernouli_series(
+            exp['engagement'].to_list(), exp['success'].to_list())
+
+        return np.array(control_bernouli), np.array(exposed_bernouli)
+
