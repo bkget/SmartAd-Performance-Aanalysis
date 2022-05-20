@@ -216,3 +216,30 @@ def resJson( res):
     
     }
     return jsonRes
+
+def plot( res):
+    fig, ax = plt.subplots(figsize=(16, 12))
+    outcome, n, k, l, u, truncated, truncate_decision, x1, r, stats, limits = res
+    yl = limits[:, 0]
+    yu = limits[:, 1]
+
+    ax.scatter(n, x1, color="#000000", zorder=1000, clip_on=False)
+    lower_line, = ax.plot(n, yl, color="#00aedb", linewidth=1)
+    upper_line, = ax.plot(n, yu, color="#d41243", linewidth=1)
+    yticks, yticklabels = plt.yticks()
+    ymin = yticks[0]
+    ymax = yticks[-1]
+
+    ax.fill_between(n, yl, ymin, color="#00aedb", alpha=0.5)
+    ax.fill_between(n, yu, ymax, color="#d41243", alpha=0.5)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    plt.xlabel("Observations")
+    plt.ylabel("Cumulative Sum")
+    plt.legend(handles=[upper_line, lower_line], labels=[
+                "Reject Null", "Accept Null"], fontsize=10, loc=2)
+    plt.show()
