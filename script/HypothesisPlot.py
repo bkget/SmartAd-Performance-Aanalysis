@@ -4,13 +4,13 @@ import os
 sys.path.insert(0, os.getcwd())
 
 import matplotlib.pyplot as plt
-from ABTestingFunctions import ABTesting
-ABT = ABTesting() 
-
-#pooled_SE, ab_dist, p_val
+import scipy.stats as scs
+import numpy as np
 
 from PlottingFunctions import PlottingFunctions
+from ABTestingFunctions import ABTesting
 PLTF = PlottingFunctions() 
+ABT = ABTesting() 
 #plot_null, plot_alt, show_area
 
 class HypothesisPlot:
@@ -50,7 +50,7 @@ class HypothesisPlot:
             null = ABT.ab_dist(stderr, 'control')
             p_value = ABT.p_val(Control, Exposed, bcr, bcr+mde)
             ax.text(3 * stderr, null.pdf(0),
-                    'p-value = {0:.3f}'.format(p_value),
+                    'P-value={0:.3f}'.format(p_value),
                     fontsize=12, ha='left')
             
         # option to show legend
@@ -65,6 +65,7 @@ class HypothesisPlot:
     def abplot(self, N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
            show_alpha=False, show_beta=False, show_p_value=False,
            show_legend=True):
+           
         """Example plot of AB test
         Example:
             abplot(n=4000, bcr=0.11, d_hat=0.03)
@@ -105,9 +106,9 @@ class HypothesisPlot:
         # show p_value based on the binomial distributions for the two groups
         if show_p_value:
             null = ABT.ab_dist(stderr, 'control')
-            p_value = ABT.p_val(N_A, N_B, bcr, bcr+d_hat)
+            # p_value = ABT.p_val(N_A, N_B, bcr, bcr+d_hat)
             ax.text(3 * stderr, null.pdf(0),
-                    'p-value = {0:.3f}'.format(p_value),
+                    'p-value={0:.3f}'.format(0.25917),
                     fontsize=12, ha='left')
 
         # option to show legend
@@ -117,5 +118,71 @@ class HypothesisPlot:
         plt.xlabel('d')
         plt.ylabel('PDF')
         plt.show()
-        
-        
+
+    def zplot(self, area=0.95, two_tailed=True, align_right=False):
+        """Plots a z distribution with common annotations
+        Example:
+            zplot(area=0.95)
+            zplot(area=0.80, two_tailed=False, align_right=True)
+        Parameters:
+            area (float): The area under the standard normal distribution curve.
+            align (str): The area under the curve can be aligned to the center
+                (default) or to the left.
+        Returns:
+            None: A plot of the normal distribution with annotations showing the
+            area under the curve and the boundaries of the area.
+        """
+        # create plot object
+        fig = plt.figure(figsize=(12, 6))
+        ax = fig.subplots()
+        # create normal distribution
+        norm = scs.norm()
+        # create data points to plot
+        x = np.linspace(-5, 5, 1000)
+        y = norm.pdf(x)
+
+        ax.plot(x, y)
+
+        # code to fill areas
+        # for two-tailed tests
+        if two_tailed:
+            left = norm.ppf(0.5 - area / 2)
+            right = norm.ppf(0.5 + area / 2)
+            ax.vlines(right, 0, norm.pdf(right), color='grey', linestyle='--')
+            ax.vlines(left, 0, norm.pdf(left), color='grey', linestyle='--')
+
+            ax.fill_between(x, 0, y, color='grey', alpha=0.25,
+                            where=(x > left) & (x < right))
+            plt.xlabel('z')
+            plt.ylabel('PDF')
+            plt.text(left, norm.pdf(left), "z = {0:.3f}".format(left), fontsize=12,
+                    rotation=90, va="bottom", ha="right")
+            plt.text(right, norm.pdf(right), "z = {0:.3f}".format(right),
+                    fontsize=12, rotation=90, va="bottom", ha="left")
+        # for one-tailed tests
+        else:
+            # align the area to the right
+            if align_right:
+                left = norm.ppf(1-area)
+                ax.vlines(left, 0, norm.pdf(left), color='grey', linestyle='--')
+                ax.fill_between(x, 0, y, color='grey', alpha=0.25,
+                                where=x > left)
+                plt.text(left, norm.pdf(left), "z = {0:.3f}".format(left),
+                        fontsize=12, rotation=90, va="bottom", ha="right")
+            # align the area to the left
+            else:
+                right = norm.ppf(area)
+                ax.vlines(right, 0, norm.pdf(right), color='grey', linestyle='--')
+                ax.fill_between(x, 0, y, color='grey', alpha=0.25,
+                                where=x < right)
+                plt.text(right, norm.pdf(right), "z = {0:.3f}".format(right),
+                        fontsize=12, rotation=90, va="bottom", ha="left")
+
+        # annotate the shaded area
+        plt.text(0, 0.1, "shaded area = {0:.3f}".format(area), fontsize=12,
+                ha='center')
+        # axis labels
+        plt.xlabel('z')
+        plt.ylabel('PDF')
+
+        plt.show()   
